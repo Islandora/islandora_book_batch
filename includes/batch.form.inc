@@ -42,7 +42,8 @@ function islandora_book_batch_form($form, &$form_state, $object) {
     '#type' => 'checkbox',
     '#title' => t('Notify admin after ingest?'),
     '#description' => t('Whether or not we should notify the site admin that ' .
-      'a book has been ingested after the ingest of the book completes.'),
+      'a book has been ingested after the ingest of the book completes ' .
+      '(requires relevant "Rules" rule).'),
   );
 
   $form['ingest_set_immediately'] = array(
@@ -50,7 +51,7 @@ function islandora_book_batch_form($form, &$form_state, $object) {
     '#title' => t('Ingest immediately?'),
     '#description' => t('If not selected, objects will just be preprocessed ' .
       'into the queue of objects to be ingested, to be fully-processed (and ' .
-      'ingested) at a later date.'),
+      'ingested) later--whenever an admin deems it an appropriate time.'),
     '#default_value' => TRUE,
   );
 

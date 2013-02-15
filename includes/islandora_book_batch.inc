@@ -91,8 +91,10 @@ class IslandoraBookBatch extends IslandoraScanBatch {
   public function preprocess() {
     $added = parent::preprocess();
 
+    $object_type = static::get_object_class();
+
     foreach ($added as $object) {
-      if ($object instanceof IslandoraBookBookBatchObject) {
+      if ($object instanceof $object_type) {
         $children = db_select('islandora_batch_queue', 'q')
           ->fields('q', array('id'))
           ->condition('parent', $object->id);
