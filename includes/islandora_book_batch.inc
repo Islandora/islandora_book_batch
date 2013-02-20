@@ -407,14 +407,14 @@ class IslandoraBookPageBatchObject extends IslandoraFlatBatchObject {
   }
 
   public function add_relationships() {
-    module_load_include('inc', 'islandora_book', 'includes/utilities');
+    module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
     // Add relationship to collection.
     $rels_ext = $this->relationships;
-    islandora_book_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isPageOf', $this->parent_id);
-    islandora_book_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isSequenceNumber', (string) $this->sequence_number, TRUE);
-    islandora_book_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isPageNumber', (string) $this->sequence_number, TRUE);
-    islandora_book_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isSection', '1', TRUE);
-    islandora_book_set_relationship($rels_ext, FEDORA_RELS_EXT_URI, 'isMemberOf', $this->parent_id);
+    islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isPageOf', $this->parent_id);
+    islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isSequenceNumber', (string) $this->sequence_number, TRUE);
+    islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isPageNumber', (string) $this->sequence_number, TRUE);
+    islandora_paged_content_set_relationship($rels_ext, ISLANDORA_RELS_EXT_URI, 'isSection', '1', TRUE);
+    islandora_paged_content_set_relationship($rels_ext, FEDORA_RELS_EXT_URI, 'isMemberOf', $this->parent_id);
     // Add content model relationship.
     $this->models = 'islandora:pageCModel';
   }
