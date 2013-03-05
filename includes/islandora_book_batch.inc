@@ -34,14 +34,13 @@ class IslandoraBookBatch extends IslandoraScanBatch {
       $metadata_entries = array('MODS', 'DC', '--METADATA--');
       $no_metadata = array();
       foreach ($files as $key => $value) {
-        if (count(array_intersect(array_keys($value), $metadata_entries)) === 0) {
+        if (count(array_intersect(array_keys($value['.']), $metadata_entries)) === 0) {
           $no_metadata[$key] = $key;
         }
       }
 
       $files = array_diff_key($files, $no_metadata);
     }
-
 
     if ($this->get_target_type() == 'directory' && $this->parameters['directory_dedup']) {
       // Grab all entries starting with the target from the resources table.

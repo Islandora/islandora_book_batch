@@ -29,7 +29,6 @@ function islandora_book_batch_drush_command() {
           'to the objects. Only applies to the "book" level object.',
         'value' => 'optional',
       ),
-      /*
       'parent' => array(
         'description' => 'The collection to which the generated items should ' .
           'be added.  Only applies to the "book" level object. If ' .
@@ -38,7 +37,6 @@ function islandora_book_batch_drush_command() {
           'and itself is a PID, all books will be related to the given PID.',
         'value' => 'optional'
       ),
-      */
       'parent_relationship_uri' => array(
         'description' => 'The namespace URI of the relationship to the parent.' .
           ' Defaults to "info:fedora/fedora-system:def/relations-external#".',
