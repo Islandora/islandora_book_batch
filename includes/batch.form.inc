@@ -37,7 +37,19 @@ function islandora_book_batch_form($form, &$form_state, $object) {
     '#description' => t('Whether or not we should generate PDFs for the books ' .
       'after ingesting all of the pages.'),
   );
-
+  if (module_exists('islandora_ocr')) {
+    module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+    $derive = islandora_paged_content_get_enabled_ingest_derivatives('islandora_book');
+    if ($derive['ocr']) {
+      $form['generate_ocr'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Generate OCR?'),
+        '#description' => t('Whether or not we should generate OCR for the pages ' .
+            'of the book.'),
+        '#default_value' => TRUE,
+      );
+    }
+  }
   $form['email_admin'] = array(
     '#type' => 'checkbox',
     '#title' => t('Notify admin after ingest?'),

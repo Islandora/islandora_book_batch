@@ -53,6 +53,10 @@ function islandora_book_batch_drush_command() {
           'proper.',
         'value' => 'optional',
       ),
+      'do_not_generate_ocr' => array(
+        'description' => 'A flag to allow for conditional OCR generation.',
+        'value' => 'optional',
+      ),
       'email_admin' => array(
         'description' => 'A flag to notify the site admin when the book is ' .
           'fully ingested (depends on Rules being enabled).',
@@ -95,6 +99,13 @@ function drush_islandora_book_batch_preprocess() {
   }
   else {
     $parameters['content_models'] = array('islandora:bookCModel');
+  }
+
+  if ($do_not_generate = drush_get_option('do_not_generate_ocr', FALSE)) {
+    $parameters['generate_ocr'] = FALSE;
+  }
+  else {
+    $parameters['generate_ocr'] = TRUE;
   }
 
   $preprocessor = new IslandoraBookBatch($connection, $parameters);

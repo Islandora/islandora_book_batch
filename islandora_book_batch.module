@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Module used to handle book batches through the UI and drush.
+ */
 
 /**
  * Implements hook_CMODEL_PID_islandora_object_ingested().
@@ -16,8 +20,12 @@ function islandora_book_batch_islandora_bookCModel_islandora_object_ingested($ob
     $batch['operations'][] = array('islandora_book_batch_remove_pdf_flag', array($object));
 
     if (module_exists('rules')) {
-      // Allow rules to respond to this event. (To allow configurable messages for mailing and such)
-      $batch['operations'][] = array('rules_invoke_event', array('islandora_book_batch_ingested', $object->id));
+      // Allow rules to respond to this event. (To allow configurable messages
+      // for mailing and such).
+      $batch['operations'][] = array(
+        'rules_invoke_event',
+        array('islandora_book_batch_ingested', $object->id),
+      );
     }
 
     batch_set($batch);
@@ -26,9 +34,18 @@ function islandora_book_batch_islandora_bookCModel_islandora_object_ingested($ob
     if (!isset($batch['id'])) {
       // Start the batch, as it does not seem to be running.
       // XXX: Will this cause issues? If there's some other hook to run after,
-      //   there might be issues, no?
+      // there might be issues, no?
       batch_process();
     }
+  }
+}
+
+/**
+ * Implements hook_CMODEL_PID_islandora_object_ingested().
+ */
+function islandora_book_batch_islandora_pageCModel_islandora_object_ingested($object) {
+  if ($object->relationships->get(ISLANDORA_RELS_EXT_URI, 'generate_ocr', '', TRUE)) {
+    $object->relationships->remove(ISLANDORA_RELS_EXT_URI, 'generate_ocr', '', TRUE);
   }
 }
 
