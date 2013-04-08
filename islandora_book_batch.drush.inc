@@ -24,33 +24,37 @@ function islandora_book_batch_drush_command() {
         'description' => 'The target to directory or zip file to scan.',
         'required' => TRUE,
       ),
+      'namespace' => array(
+        'description' => 'The namespace for objects created by this command.  Defaults to namespce set in fedora config.',
+        'required' => FALSE,
+      ),
       'content_models' => array(
         'description' => 'A comma-separated list of content models to assign ' .
-          'to the objects. Only applies to the "book" level object.',
+        'to the objects. Only applies to the "book" level object.',
         'value' => 'optional',
       ),
       'parent' => array(
         'description' => 'The collection to which the generated items should ' .
-          'be added.  Only applies to the "book" level object. If ' .
-          '"directory" and the directory containing the book description is ' .
-          'a valid PID, it will be set as the parent. If this is specified ' .
-          'and itself is a PID, all books will be related to the given PID.',
+        'be added.  Only applies to the "book" level object. If ' .
+        '"directory" and the directory containing the book description is ' .
+        'a valid PID, it will be set as the parent. If this is specified ' .
+        'and itself is a PID, all books will be related to the given PID.',
         'value' => 'optional'
       ),
       'parent_relationship_uri' => array(
         'description' => 'The namespace URI of the relationship to the parent.' .
-          ' Defaults to "info:fedora/fedora-system:def/relations-external#".',
+        ' Defaults to "info:fedora/fedora-system:def/relations-external#".',
         'value' => 'optional',
       ),
       'parent_relationship_pred' => array(
         'description' => 'The predicate of the relationship to the parent. ' .
-          'Defaults to "isMemberOfCollection".',
+        'Defaults to "isMemberOfCollection".',
         'value' => 'optional',
       ),
       'create_pdfs' => array(
         'description' => 'A flag to cause PDFs to be created in books. Page ' .
-          'PDF creation is dependant on the configuration within Drupal ' .
-          'proper.',
+        'PDF creation is dependant on the configuration within Drupal ' .
+        'proper.',
         'value' => 'optional',
       ),
       'do_not_generate_ocr' => array(
@@ -59,18 +63,18 @@ function islandora_book_batch_drush_command() {
       ),
       'email_admin' => array(
         'description' => 'A flag to notify the site admin when the book is ' .
-          'fully ingested (depends on Rules being enabled).',
+        'fully ingested (depends on Rules being enabled).',
         'value' => 'optional',
       ),
       'wait_for_metadata' => array(
         'description' => 'A flag to indicate that we should hold off on ' .
-          'trying to ingest books until we have metadata available for them' .
-          'at the book level.',
+        'trying to ingest books until we have metadata available for them' .
+        'at the book level.',
         'value' => 'optional',
       ),
       'directory_dedup' => array(
         'description' => 'A flag to indicate that we should avoid ' .
-          'repreprocessing books which are located in directories.',
+        'repreprocessing books which are located in directories.',
       ),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
@@ -80,10 +84,11 @@ function islandora_book_batch_drush_command() {
 }
 
 function drush_islandora_book_batch_preprocess() {
-    // Build one of our preprocessors.
+  // Build one of our preprocessors.
   $connection = islandora_get_tuque_connection();
   $parameters = array(
     'type' => drush_get_option('type'),
+    'namespace' => drush_get_option('namespace'),
     'target' => drush_get_option('target'),
     'parent' => drush_get_option('parent', 'islandora:bookCollection'),
     'parent_relationship_uri' => drush_get_option('parent_relationship_uri', 'info:fedora/fedora-system:def/relations-external#'),
