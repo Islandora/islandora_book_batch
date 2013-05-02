@@ -197,7 +197,7 @@ EOXML;
   /**
    * Transform from --METADATA--.{mrc,xml} to MODS.
    *
-   * @param FedoraDatastream $datastream
+   * @param AbstractDatastream $datastream
    *
    */
   protected function get_mods_from_general_source(AbstractDatastream $datastream) {
@@ -323,7 +323,7 @@ EOXML;
    *
    * ... otherwise, we'll let the MODS implementation transform it.
    *
-   * @param FedoraDatastream $datastream
+   * @param AbstractDatastream $datastream
    *   The datastream to which we should add the metadata.
    */
   protected function get_dc_from_general_source(AbstractDatastream $datastream) {
