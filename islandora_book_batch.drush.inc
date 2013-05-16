@@ -84,7 +84,11 @@ function islandora_book_batch_drush_command() {
 }
 
 function drush_islandora_book_batch_preprocess() {
-  // Build one of our preprocessors.
+  // XXX: Due to how Drush bootstrapping works, the connection may be created
+  // without credentials (when your site's front page is
+  // 'islandora/object/some:object', for example). Resetting to ensure a new
+  // connection gets created should fix it.
+  drupal_static_reset('islandora_get_tuque_connection');
   $connection = islandora_get_tuque_connection();
   $parameters = array(
     'type' => drush_get_option('type'),
