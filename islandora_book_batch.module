@@ -8,6 +8,11 @@
  * Implements hook_CMODEL_PID_islandora_object_ingested().
  */
 function islandora_book_batch_islandora_bookCModel_islandora_object_ingested($object) {
+  if (!isset($object['TN'])) {
+    module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+    islandora_paged_content_update_paged_content_thumbnail($object);
+  }
+
   if ($object->relationships->get(ISLANDORA_RELS_EXT_URI, 'create_pdf', 'true', TRUE)) {
     // Generate the PDF if the flag was set.
     module_load_include('inc', 'islandora_paged_content', 'includes/batch');
