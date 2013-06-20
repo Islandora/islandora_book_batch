@@ -84,12 +84,12 @@ function islandora_book_batch_menu() {
  * Menu access callback.
  */
 function islandora_book_batch_menu_access($object) {
-  if (!user_access(FEDORA_INGEST)) {
+  if (!islandora_object_access(FEDORA_INGEST, $object)) {
     return FALSE;
   }
 
   $c = 'COLLECTION_POLICY';
-  if (isset($object[$c])) {
+  if (isset($object[$c]) && islandora_datastream_access(FEDORA_VIEW_OBJECTS, $object[$c])) {
     $cp = new CollectionPolicy($object[$c]->content);
 
     return array_key_exists('islandora:bookCModel', $cp->getContentModels());
