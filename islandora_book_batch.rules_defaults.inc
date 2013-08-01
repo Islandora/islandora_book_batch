@@ -21,7 +21,7 @@ function islandora_book_batch_default_rules_configuration() {
     'pred' => 'email-admin-when-ingested',
     'object' => 'true',
     'type' => 1,
-  ); 
+  );
 
   $rule->label = 'E-mail admin';
   $rule->active = TRUE;
@@ -39,4 +39,3 @@ function islandora_book_batch_default_rules_configuration() {
 
   return $configs;
 }
-

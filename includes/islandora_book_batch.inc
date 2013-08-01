@@ -5,10 +5,17 @@
  * Implementation of classes from the batch ingest framework for books.
  */
 
+// @codingStandardsIgnoreStart
+// This Whole file is ignored due to classes and methods are not camelcase and it
+// being called all over the place.  All of the other coding standards are met.
+
 /**
  * Batch preprocessor.
  */
 class IslandoraBookBatch extends IslandoraScanBatch {
+  /**
+   * Static function to get object class.
+   */
   protected static function get_object_class() {
     return 'IslandoraBookBookBatchObject';
   }
@@ -52,7 +59,8 @@ class IslandoraBookBatch extends IslandoraScanBatch {
         ->condition('type', 'book_directory')
         ->condition('resource', $target . '%', 'LIKE');
 
-      // Remove entries from the $files array which already exist in the resources table.
+      // Remove entries from the $files array which already exist in the
+      // resources table.
       foreach ($q->execute() as $result) {
         // Grab the relative path of the book resource entry.
         $relative_path = substr($result->resource, $target_length + 1);
@@ -87,6 +95,9 @@ class IslandoraBookBatch extends IslandoraScanBatch {
     }
   }
 
+  /**
+   * Function preprocess.
+   */
   public function preprocess() {
     $added = parent::preprocess();
 
@@ -127,6 +138,9 @@ class IslandoraBookBatch extends IslandoraScanBatch {
  * @todo Should be moved into islandora_batch.
  */
 class IslandoraFlatBatchObject extends IslandoraScanBatchObject {
+  /**
+   * Function batch_process.
+   */
   public function batch_process() {
     // Use object_info to create some datastreams.
     $this->label = $this->get_title();
@@ -134,9 +148,9 @@ class IslandoraFlatBatchObject extends IslandoraScanBatchObject {
     $this->get_dc();
 
     // Add other assets...
-
     // XXX: This should be made into a constant or sommat?
-    // Skip MODS and DC (and --METADATA--), 'cause they get handled in other functions.
+    // Skip MODS and DC (and --METADATA--), 'cause they get handled in other
+    // functions.
     $skip = drupal_map_assoc(array('MODS', 'DC', '--METADATA--'));
 
     foreach (array_diff_key($this->object_info['.'], $skip) as $dsid => $obj) {
@@ -152,6 +166,9 @@ class IslandoraFlatBatchObject extends IslandoraScanBatchObject {
     return ISLANDORA_BATCH_STATE__DONE;
   }
 
+  /**
+   * Function get_mods.
+   */
   protected function get_mods() {
     if (!isset($this['MODS'])) {
       $mods_datastream = $this->constructDatastream('MODS', 'X');
@@ -175,8 +192,8 @@ class IslandoraFlatBatchObject extends IslandoraScanBatchObject {
       }
 
       if (!isset($mods_datastream->content)) {
-      // If we do not yet have any XML, create a dumb MODS with just the
-      //   title, and set it...
+        // If we do not yet have any XML, create a dumb MODS with just the
+        // title, and set it...
         $title = $this->base_name;
 
         $mods_datastream->content = <<<EOXML
@@ -198,7 +215,7 @@ EOXML;
    * Transform from --METADATA--.{mrc,xml} to MODS.
    *
    * @param AbstractDatastream $datastream
-   *
+   *   The datastream
    */
   protected function get_mods_from_general_source(AbstractDatastream $datastream) {
     $meta = $this->object_info['.']['--METADATA--'];
@@ -209,26 +226,26 @@ EOXML;
 
       if ($xml) {
         $s_xml = new SimpleXMLElement($xml);
-    //   MODS, set
+        // MODS, set.
         if ($s_xml->getName() == 'mods') {
           // XXX: Should probably create a resource entry.
           $datastream->setContentFromFile($meta->uri, FALSE);
         }
-    //   MARCXML, transform to MODS and set
+        // MARCXML, transform to MODS and set.
         elseif ($s_xml->getName() == 'record') {
           $datastream->content = static::run_xsl_transform(array(
             'input' => $xml,
             'xsl' => $dir . '/transforms/MARC21slim2MODS3-4.xsl',
           ));
         }
-    //   DC, transform to MODS and set
+        // DC, transform to MODS and set.
         elseif ($s_xml->getName() == 'dc') {
           $datastream->content = static::run_xsl_transform(array(
             'input' => $xml,
             'xsl' => $dir . '/transforms/simpleDC2MODS.xsl',
           ));
         }
-    //   Unrecognized format...
+        // Unrecognized format...
         else {
           // Do nothing?
         }
@@ -236,7 +253,6 @@ EOXML;
     }
     elseif ($ext == 'mrc') {
       // Generate some MODS from binary MARC.
-
       // Get the java executable.
       $java = variable_get('islandora_batch_java', 'java');
 
@@ -263,25 +279,26 @@ EOXML;
       unlink($temp_file_mods);
 
       // The transformation produces a collection of mods docs (even if there's
-      //   only one)...  Let's grab the first one.
+      // only one)...  Let's grab the first one.
       $mods_docs = $doc->getElementsByTagName('mods');
 
       if ($mods_docs->length > 0) {
         // Grab the first.
         $mods = new DOMDocument();
         $mods_node = $mods_docs->item(0);
-        $mods_node =  $mods->importNode($mods_node, TRUE);
+        $mods_node = $mods->importNode($mods_node, TRUE);
         $mods->appendChild($mods_node);
 
         // TODO: Transform dates to Solr format...  Or should this be left to
-        //   a core hook?
-
+        // a core hook?
         // And put the content into the datastream.
         $datastream->content = $mods->saveXML();
       }
     }
   }
-
+  /**
+   * Function batch_process.
+   */
   protected function get_dc() {
     if (!isset($this['DC'])) {
       // Create the DC datastream on this object.
@@ -300,7 +317,7 @@ EOXML;
       // Get the DC by transforming from MODS.
       if (!isset($dc_datastream->content)) {
         // XXX: Might want to make this use a file, instead of staging the DC
-        //   in the database table (inside the object we serialize).
+        // in the database table (inside the object we serialize).
         $new_dc = static::run_xsl_transform(array(
           'xsl' => drupal_get_path('module', 'islandora_batch') . '/transforms/mods_to_dc.xsl',
           'input' => $this->get_mods(),
@@ -343,7 +360,13 @@ EOXML;
   }
 }
 
+/**
+ * Class IslandoraBookBatchObject.
+ */
 class IslandoraBookBookBatchObject extends IslandoraFlatBatchObject {
+  /**
+   * Function class constructor.
+   */
   public function __construct(IslandoraTuque $connection, $base_name, $object_info, $pp) {
     parent::__construct($connection, $base_name, $object_info, $pp);
 
@@ -353,12 +376,17 @@ class IslandoraBookBookBatchObject extends IslandoraFlatBatchObject {
       );
     }
   }
-
+  /**
+   * Function initial_batch_state.
+   */
   public function initial_batch_state() {
     // Not ready until we've added the pages.
     return ISLANDORA_BATCH_STATE__NOT_READY;
   }
 
+  /**
+   * Function get_children.
+   */
   public function get_children(IslandoraTuque $connection) {
     // Create page objects, return in an array.
     $children = array();
@@ -372,6 +400,9 @@ class IslandoraBookBookBatchObject extends IslandoraFlatBatchObject {
     return $children;
   }
 
+  /**
+   * Function add_relationships.
+   */
   public function add_relationships() {
     parent::add_relationships();
 
@@ -385,9 +416,16 @@ class IslandoraBookBookBatchObject extends IslandoraFlatBatchObject {
   }
 }
 
+/**
+ * Class IslandoraBookPageBatchObject.
+ */
 class IslandoraBookPageBatchObject extends IslandoraFlatBatchObject {
-  protected $parent_id, $sequence_number;
+  protected $parent_id;
+  protected $sequence_number;
 
+  /**
+   * Function construct.
+   */
   public function __construct(IslandoraTuque $connection, $parent_id, $sequence, $object_info, $pp) {
     parent::__construct($connection, "$parent_id-$sequence", $object_info, $pp);
 
@@ -395,16 +433,25 @@ class IslandoraBookPageBatchObject extends IslandoraFlatBatchObject {
     $this->sequence_number = $sequence;
   }
 
+  /**
+   * Function get_children.
+   */
   public function get_children(IslandoraTuque $connection) {
     // Pages should not have children.
     return array();
   }
 
+  /**
+   * Function initial_batch_state.
+   */
   public function initial_batch_state() {
     // Not ready.
     return ISLANDORA_BATCH_STATE__NOT_READY;
   }
 
+  /**
+   * Function add_relationships.
+   */
   public function add_relationships() {
     module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
     // Add relationship to collection.
@@ -426,4 +473,4 @@ class IslandoraBookPageBatchObject extends IslandoraFlatBatchObject {
     }
   }
 }
-
+// @codingStandardsIgnoreEnd

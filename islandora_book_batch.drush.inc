@@ -14,7 +14,9 @@ function islandora_book_batch_drush_command() {
   $items['islandora_book_batch_preprocess'] = array(
     'aliases' => array('ibbp'),
     'description' => 'Preprocessed books into database entries.',
-    'drupal dependencies' => array('islandora_batch', 'islandora_book', 'islandora_book_batch'),
+    'drupal dependencies' => array('islandora_batch',
+      'islandora_book',
+      'islandora_book_batch'),
     'options' => array(
       'type' => array(
         'description' => 'Either "directory" or "zip".',
@@ -39,7 +41,7 @@ function islandora_book_batch_drush_command() {
         '"directory" and the directory containing the book description is ' .
         'a valid PID, it will be set as the parent. If this is specified ' .
         'and itself is a PID, all books will be related to the given PID.',
-        'value' => 'optional'
+        'value' => 'optional',
       ),
       'parent_relationship_uri' => array(
         'description' => 'The namespace URI of the relationship to the parent.' .
@@ -52,9 +54,7 @@ function islandora_book_batch_drush_command() {
         'value' => 'optional',
       ),
       'create_pdfs' => array(
-        'description' => 'A flag to cause PDFs to be created in books. Page ' .
-        'PDF creation is dependant on the configuration within Drupal ' .
-        'proper.',
+        'description' => 'A flag to cause PDFs to be created in books. Page PDF creation is dependant on the configuration within Drupal proper.',
         'value' => 'optional',
       ),
       'do_not_generate_ocr' => array(
@@ -83,6 +83,9 @@ function islandora_book_batch_drush_command() {
   return $items;
 }
 
+/**
+ * Implements hook_drush_command().
+ */
 function drush_islandora_book_batch_preprocess() {
   // XXX: Due to how Drush bootstrapping works, the connection may be created
   // without credentials (when your site's front page is

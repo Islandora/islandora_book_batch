@@ -18,12 +18,10 @@ function islandora_book_batch_rules_event_info() {
       'book_object' => array(
         'type' => 'islandora_object',
         'label' => t('The ingested book'),
-        'description' => t('A Tuque object for the ingested book, as an ' .
-          'entity.'),
+        'description' => t('A Tuque object for the ingested book, as an entity.'),
       ),
     ),
   );
 
   return $events;
 }
-
