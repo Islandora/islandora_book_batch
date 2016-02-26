@@ -22,7 +22,7 @@ function islandora_book_batch_drush_command() {
         'description' => 'Either "directory" or "zip".',
         'required' => TRUE,
       ),
-      'target' => array(
+      'scan_target' => array(
         'description' => 'The target to directory or zip file to scan.',
         'required' => TRUE,
       ),
@@ -84,6 +84,10 @@ function islandora_book_batch_drush_command() {
         'description' => 'A flag to indicate the page progression for the book. If not specified will default to LR.',
         'value' => 'optional',
       ),
+      'output_set_id' => array(
+        'description' => 'A flag to indicate whether to print the set ID of the preprocessed book.',
+        'value' => 'optional',
+      ),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
   );
@@ -104,7 +108,7 @@ function drush_islandora_book_batch_preprocess() {
   $parameters = array(
     'type' => drush_get_option('type'),
     'namespace' => drush_get_option('namespace'),
-    'target' => drush_get_option('target'),
+    'scan_target' => drush_get_option('scan_target'),
     'parent' => drush_get_option('parent', 'islandora:bookCollection'),
     'parent_relationship_uri' => drush_get_option('parent_relationship_uri', 'info:fedora/fedora-system:def/relations-external#'),
     'parent_relationship_pred' => drush_get_option('parent_relationship_pred', 'isMemberOfCollection'),
@@ -134,6 +138,10 @@ function drush_islandora_book_batch_preprocess() {
 
   // Pass the preprocessor off to run.
   $preprocessed = islandora_batch_handle_preprocessor($preprocessor);
+
+  if (drush_get_option('output_set_id', FALSE)) {
+    drush_print($preprocessor->getSetId());
+  }
 }
 
 /**
