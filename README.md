@@ -1,4 +1,4 @@
-# Islandora Book Batch [![Build Status](https://travis-ci.org/Islandora/islandora_batch.png?branch=7.x)](https://travis-ci.org/Islandora/islandora_batch)
+# Islandora Book Batch [![Build Status](https://travis-ci.org/Islandora/islandora_book_batch.png?branch=7.x)](https://travis-ci.org/Islandora/islandora_book_batch)
 
 ## Introduction
 
