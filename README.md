@@ -80,7 +80,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Jared Whiklo](https://github.com/whikloj)
+* [Rosie Le Faive](https://github.com/rosiel)
 
 ## Development
 
